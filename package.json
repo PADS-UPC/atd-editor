@@ -8,7 +8,9 @@
     "react-contextmenu": "^2.9.3",
     "react-dom": "^16.5.1",
     "react-highlightable": "0.0.2",
-    "react-scripts": "1.1.5"
+    "react-list": "^0.8.10",
+    "react-scripts": "1.1.5",
+    "react-sidebar": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

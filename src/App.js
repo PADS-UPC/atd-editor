@@ -35,7 +35,6 @@ class App extends Component {
         super();
         this.state = {model: mkModel(this.forceUpdate.bind(this))}
     }
-    
 
     render() {
         return (

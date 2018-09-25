@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ContextMenu, MenuItem, ContextMenuTrigger, SubMenu } from "react-contextmenu";
 import Annotation from "./Annotation.js";
+import Relation from "./Relation.js";
 
 const AtdViewerStyle = {"textAlign": "justify",
                         "margin": "100px 10% 100px 10%",
@@ -16,10 +17,59 @@ function viewportRelativeBox (element) {
 
     return {
         top: relement.top - rparent.top,
-        right: relement.right - rparent.right,
-        bottom: relement.bottom - rparent.bottom,
+        right: relement.right - rparent.left,
+        bottom: relement.bottom - rparent.top,
         left: relement.left - rparent.left
     };
+}
+
+
+/** Computes the necessary rectangles of an annotation given the selection start
+    and end positions, and the paragraph node with the selection */
+function computeRects (paragraph, startBox, endBox) {
+    let lineHeight = parseFloat(window.getComputedStyle(paragraph).getPropertyValue("line-height").replace("px",""));
+    let paragraphRect = viewportRelativeBox(paragraph);
+    let lineStart = paragraphRect.left;
+    let lineEnd = paragraphRect.right;
+    let numLines = Math.round(((endBox.top + lineHeight) - startBox.top) / lineHeight);
+    let annRects = [];
+
+    console.log(`numLines ${(((endBox.top + lineHeight) - startBox.top) / lineHeight)}`)
+
+    if (numLines === 1) {
+        // Start and end on same line
+        annRects = annRects.concat({top: startBox.top,
+                                    left: startBox.left,
+                                    width: endBox.left - startBox.left,
+                                    height: lineHeight});
+    } else {
+        let lineTop = startBox.top;
+        // First line
+        annRects = annRects.concat({width: lineEnd - startBox.left,
+                                    height: lineHeight,
+                                    top: lineTop,
+                                    left: startBox.left});
+
+        lineTop += lineHeight;
+
+        // Full lines (intermediate)
+        for (var i = 1; i < numLines - 1; ++i) {
+            annRects = annRects.concat({width: lineEnd - lineStart,
+                                        height: lineHeight,
+                                        top: lineTop,
+                                        left: lineStart});
+
+            lineTop += lineHeight;
+        }
+
+        // Last line
+        annRects = annRects.concat({width: endBox.left - lineStart,
+                                    height: lineHeight,
+                                    top: lineTop,
+                                    left: lineStart});
+    }
+
+    return annRects;
 }
 
 /*@pre: paragraph is a <p> element containing only plain text*/
@@ -80,11 +130,7 @@ class AtdViewer extends Component {
     }
 
     createAnnotationHighlight(annotationModel) {
-        let {paragraphId, start, end} = annotationModel;
-        let paragraph = document.getElementById(paragraphId);
-        let startBox = getCharacterPositionInParagraph(paragraph, start);
-        let endBox = getCharacterPositionInParagraph(paragraph, end);
-        let id = annotationModel.id;
+        let {paragraphId, start, end, id, annRects} = annotationModel;
 
         let self = this;
         let callbacks = {
@@ -93,8 +139,8 @@ class AtdViewer extends Component {
             deleteAnnotation: function() {self.deleteAnnotation(id)}
         };
 
-        return (<Annotation key={id} startBox={startBox} endBox={endBox} paragraph={paragraph}
-                            id={id} callbacks={callbacks} model={this.props.model} type={annotationModel.type}/>);
+        return (<Annotation key={id} annRects={annRects} id={id} callbacks={callbacks}
+                            model={this.props.model} type={annotationModel.type}/>);
     }
 
     handleMouseUp (e) {
@@ -123,7 +169,13 @@ class AtdViewer extends Component {
     newAnnotation (e, data) {
         if (this.state.nextAnnModel) {
             let {paragraphId, start, end} = this.state.nextAnnModel;
-            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end)
+            let paragraph = document.getElementById(paragraphId);
+            let startBox = getCharacterPositionInParagraph(paragraph, start);
+            let endBox = getCharacterPositionInParagraph(paragraph, end);
+
+            let annRects = computeRects(paragraph, startBox, endBox);
+
+            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end, annRects);
             this.props.model.addAnnotation(ann);
 
             this.setState({
@@ -145,7 +197,7 @@ class AtdViewer extends Component {
             .map((annModel) => this.createAnnotationHighlight(annModel));
 
         return(
-            <div>
+            <div style={{width:"100%", height: "100%"}}>
                 <ContextMenu id="new-annotation-menu">
                     <MenuItem data={{type: 'Action'}} onClick={this.newAnnotation}>
                         New Action
@@ -157,6 +209,11 @@ class AtdViewer extends Component {
                         New Condition
                     </MenuItem>
                 </ContextMenu>
+
+                <div id="relations-root" style={{position: "absolute", width: "100%", height: "100%", pointerEvents: "none"}}>
+                    {this.props.model.relations.map((rel) =>
+                        <Relation id={rel.id} sourceId={rel.sourceId} destId={rel.destId} model={this.props.model} highlighted={this.props.model.isRelHighlighted(rel.id)} />)}
+                </div>
 
                 <ContextMenuTrigger id="new-annotation-menu" ref={c => this.contextTrigger = c} holdToDisplay={-1}>
                     <div id="annotations-root" style={{position: "relative"}}>
@@ -173,25 +230,3 @@ class AtdViewer extends Component {
 }
 
 export default AtdViewer;
-
-/*
-  function getSelectionStartEnd (selection) {
-
-  var range = selection.getRangeAt(0);
-  var clonedRange = range.cloneRange(); // Preserve to avoid destroying selection
-
-  var dummy = document.createElement("span");
-  range.insertNode(dummy);
-  let startBox = viewportRelativeBox(dummy);
-  dummy.parentNode.removeChild(dummy);
-  range.collapse(false);
-  range.insertNode(dummy);
-  let endBox = viewportRelativeBox(dummy);
-  dummy.parentNode.removeChild(dummy);
-
-  selection.removeAllRanges();
-  selection.addRange(clonedRange);
-
-  return [startBox, endBox];
-  }
-*/

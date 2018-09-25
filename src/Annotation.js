@@ -1,18 +1,6 @@
 import React, { Component } from 'react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
-function viewportRelativeBox (element) {
-    let rparent = document.getElementById('annotations-root').getBoundingClientRect();
-    let relement = element.getBoundingClientRect();
-
-    return {
-        top: relement.top - rparent.top,
-        right: relement.right - rparent.left,
-        bottom: relement.bottom - rparent.bottom,
-        left: relement.left - rparent.left
-    };
-}
-
 class Annotation extends Component {
 
     typeColors = {
@@ -57,14 +45,12 @@ class Annotation extends Component {
         // Consider type combinations and discard impossible combinations
         let compat = this.props.model.relationCompatibilities[ev.dataTransfer.getData("type")];
         if (compat && compat[this.props.type]) {
-            console.log("wat");
             ev.preventDefault();
         }
 
     }
 
     onDrop (ev) {
-        console.log("onDrop?");
         let id = ev.dataTransfer.getData("id")
         this.setState({sourceId: id,
                        allowedRelations: this.props.model.relationCompatibilities[ev.dataTransfer.getData("type")][this.props.type]});
@@ -85,62 +71,15 @@ class Annotation extends Component {
     }
 
     render() {
-
-        let lineHeight = parseFloat(window.getComputedStyle(this.props.paragraph).getPropertyValue("line-height").replace("px",""));
-        let paragraphRect = viewportRelativeBox(this.props.paragraph);
-        let lineStart = paragraphRect.left;
-        let lineEnd = paragraphRect.right;
-        let numLines = Math.round(((this.props.endBox.top + lineHeight) - this.props.startBox.top) / lineHeight);
-        let annRects = [];
-
-        if (numLines === 1) {
-            // Start and end on same line
-            annRects = annRects.concat(<div key="line-0"
-                                            style={{width: this.props.endBox.left - this.props.startBox.left,
-                                                    height: lineHeight,
-                                                    top: this.props.startBox.top,
-                                                    left: this.props.startBox.left,
-                                                    position: "absolute",
-                                                    backgroundColor: this.typeColors[this.props.type],
-                                                    pointerEvents: this.state.respondToMouseEvents ? "auto" : "none"}}/>);
-        } else {
-            let lineTop = this.props.startBox.top;
-            // First line
-            annRects = annRects.concat(<div key="line-0"
-                                            style={{width: lineEnd - this.props.startBox.left,
-                                                    height: lineHeight,
-                                                    top: lineTop,
-                                                    left: this.props.startBox.left,
-                                                    position: "absolute",
-                                                    backgroundColor: this.typeColors[this.props.type],
-                                                    pointerEvents: this.state.respondToMouseEvents ? "auto" : "none"}}/>);
-
-            lineTop += lineHeight;
-
-            // Full lines (intermediate)
-            for (var i = 1; i < numLines - 1; ++i) {
-                annRects = annRects.concat(<div key={"line-"+i} style={{width: lineEnd - lineStart,
-                                                                        height: lineHeight,
-                                                                        top: lineTop,
-                                                                        left: lineStart,
-                                                                        position: "absolute",
-                                                                        backgroundColor: this.typeColors[this.props.type],
-                                                                        pointerEvents: this.state.respondToMouseEvents ? "auto" : "none"}}/>);
-
-                lineTop += lineHeight;
-            }
-
-            // Last line
-            annRects = annRects.concat(<div key={"line-"+numLines} style={{width: this.props.endBox.left - lineStart,
-                                                                           height: lineHeight,
-                                                                           top: lineTop,
-                                                                           left: lineStart,
-                                                                           position: "absolute",
-                                                                           backgroundColor: this.typeColors[this.props.type],
-                                                                           pointerEvents: this.state.respondToMouseEvents ? "auto" : "none"}}/>);
-
-
-        }
+        let annRects = this.props.annRects;
+        let numLines = this.props.annRects.length;
+        let annDivs = annRects.map((rect, idx) => <div key={`line-${idx}`}
+                                                       style={{width: rect.width,
+                                                               height: rect.height,
+                                                               top: rect.top,
+                                                               left: rect.left,
+                                                               position: "absolute",
+                                                               backgroundColor: this.typeColors[this.props.type],}}/>);
 
         return (
             <div onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >
@@ -159,7 +98,7 @@ class Annotation extends Component {
                 <ContextMenuTrigger id={"annotation-"+this.props.id+"-context-menu"} holdToDisplay={-1}>
                     <div draggable="true" onDragStart={this.onDragStart} onDrop={this.onDrop} onDragOver={this.onDragOver}
                          style={{opacity: this.props.callbacks.getHover() ? "0.8" : "0.3"}}>
-                        {annRects}
+                        {annDivs}
                     </div>
                 </ContextMenuTrigger>
             </div>);

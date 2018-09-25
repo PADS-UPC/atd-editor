@@ -20,7 +20,7 @@ class SidePanel extends Component {
         let ann = this.props.model.annotations[index];
 
         return (
-            <div style={{backgroundColor: this.props.model.getHover(ann.id) ? "#dd5555" : "white",
+            <div style={{backgroundColor: this.props.model.getHover(ann.id) ? this.props.model.typeColors[ann.type] : this.props.model.dullTypeColors[ann.type],
                          textAlign: "left",
                          padding: "1em",
                          margin: "1em",
@@ -30,13 +30,13 @@ class SidePanel extends Component {
                  onMouseOut={() => this.props.model.setHover(ann.id, false)}>
                 <Row>
                     <Col xs={10}>
-                        <h3>{ann.type}</h3>
+                        <h4 style={{fontFamily: "serif"}}>"{ann.text}"</h4>
                     </Col>
                     <Col xs={2}>
                         <Button bsSize="small" onClick={() => this.props.model.deleteAnnotation(ann.id)}>x</Button>
                     </Col>
                 </Row>
-                <p>{ann.start}</p>
+                <p>Start: {ann.start}, End:{ann.end}</p>
             </div>);
     }
 

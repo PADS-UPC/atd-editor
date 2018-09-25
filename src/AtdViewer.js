@@ -170,12 +170,13 @@ class AtdViewer extends Component {
         if (this.state.nextAnnModel) {
             let {paragraphId, start, end} = this.state.nextAnnModel;
             let paragraph = document.getElementById(paragraphId);
+            let text = paragraph.textContent.substring(start, end);
             let startBox = getCharacterPositionInParagraph(paragraph, start);
             let endBox = getCharacterPositionInParagraph(paragraph, end);
 
             let annRects = computeRects(paragraph, startBox, endBox);
 
-            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end, annRects);
+            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end, text, annRects);
             this.props.model.addAnnotation(ann);
 
             this.setState({

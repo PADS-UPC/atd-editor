@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactList from "react-list";
 import Constants from "./Constants.js";
+import Checkbox from '@material-ui/core/Checkbox'
 
 var Tab = require('react-bootstrap').Tab;
 var Tabs = require('react-bootstrap').Tabs;
@@ -31,37 +32,46 @@ class SidePanel extends Component {
                  onMouseOut={() => this.props.callbacks.onHoverEnd(ann.id)}>
                 <Row>
                     <Col xs={10}>
-                        <h4><strong>{ann.id}</strong> <emph>"{ann.text}"</emph></h4>
+                        <h4><strong>{ann.id}</strong> {ann.text}</h4>
                     </Col>
                     <Col xs={2}>
                         <Button bsSize="small" onClick={() => this.props.model.deleteAnnotation(ann.id)}>x</Button>
                     </Col>
                 </Row>
-                <p>Start: {ann.start}, End:{ann.end}</p>
+                {ann.type === "Action" ?
+                 <div>
+                    <label style={{fontWeight: "normal"}}>Optional <input name="Optional" type="checkbox"/> </label>
+                    <br/>
+                    <label style={{fontWeight: "normal"}}>Final <input name="Optional" type="checkbox"/> </label>
+                 </div> :
+                 <div></div>}
             </div>);
     }
 
     createRelationBox (index, key) {
         let rel = this.relationsToRender[index];
+        let sourceAnn = this.props.model.getAnnotation(rel.sourceId);
+        let destAnn = this.props.model.getAnnotation(rel.destId);
 
         return (
-            <div style={{backgroundColor: this.props.model.isRelHighlighted(rel.id) ? "#dd5555" : "white",
+            <div style={{backgroundColor: this.props.hover[rel.id] ? "#dddddd" : "white",
                          textAlign: "left",
                          padding: "1em",
                          margin: "1em",
                          borderRadius: "0.2em",
                          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"}}
-                 onMouseOver={() => this.props.model.setRelHighlighted(rel.id, true)}
-                 onMouseOut={() => this.props.model.setRelHighlighted(rel.id, false)} >
+                 onMouseOver={() => this.props.callbacks.onHoverStart(rel.id)}
+                 onMouseOut={() => this.props.callbacks.onHoverEnd(rel.id)} >
                 <Row>
                     <Col xs={10}>
-                        <h3>{rel.type}</h3>
+                        <h4><strong>{rel.id}</strong> {rel.type}</h4>
                     </Col>
                     <Col xs={2}>
                         <Button bsSize="small" onClick={() => this.props.model.deleteRelation(rel.id)}>x</Button>
                     </Col>
                 </Row>
-                <p>{rel.sourceId} {rel.destId}</p>
+                <p>{rel.sourceId}: {sourceAnn.text}</p>
+                <p>{rel.destId}: {destAnn.text}</p>
             </div>);
     }
 

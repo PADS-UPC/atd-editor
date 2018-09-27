@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ContextMenu, MenuItem, ContextMenuTrigger, SubMenu } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import Annotation from "./Annotation.js";
 import Relation from "./Relation.js";
 
@@ -11,79 +11,6 @@ const AtdViewerStyle = {"textAlign": "justify",
                         "minHeight": "80em",
                         "fontSize": "12pt"};
 
-function viewportRelativeBox (element) {
-    let rparent = document.getElementById('annotations-root').getBoundingClientRect();
-    let relement = element.getBoundingClientRect();
-
-    return {
-        top: relement.top - rparent.top,
-        right: relement.right - rparent.left,
-        bottom: relement.bottom - rparent.top,
-        left: relement.left - rparent.left
-    };
-}
-
-
-/** Computes the necessary rectangles of an annotation given the selection start
-    and end positions, and the paragraph node with the selection */
-function computeRects (paragraph, startBox, endBox) {
-    let lineHeight = parseFloat(window.getComputedStyle(paragraph).getPropertyValue("line-height").replace("px",""));
-    let paragraphRect = viewportRelativeBox(paragraph);
-    let lineStart = paragraphRect.left;
-    let lineEnd = paragraphRect.right;
-    let numLines = Math.round(((endBox.top + lineHeight) - startBox.top) / lineHeight);
-    let annRects = [];
-
-    console.log(`numLines ${(((endBox.top + lineHeight) - startBox.top) / lineHeight)}`)
-
-    if (numLines === 1) {
-        // Start and end on same line
-        annRects = annRects.concat({top: startBox.top,
-                                    left: startBox.left,
-                                    width: endBox.left - startBox.left,
-                                    height: lineHeight});
-    } else {
-        let lineTop = startBox.top;
-        // First line
-        annRects = annRects.concat({width: lineEnd - startBox.left,
-                                    height: lineHeight,
-                                    top: lineTop,
-                                    left: startBox.left});
-
-        lineTop += lineHeight;
-
-        // Full lines (intermediate)
-        for (var i = 1; i < numLines - 1; ++i) {
-            annRects = annRects.concat({width: lineEnd - lineStart,
-                                        height: lineHeight,
-                                        top: lineTop,
-                                        left: lineStart});
-
-            lineTop += lineHeight;
-        }
-
-        // Last line
-        annRects = annRects.concat({width: endBox.left - lineStart,
-                                    height: lineHeight,
-                                    top: lineTop,
-                                    left: lineStart});
-    }
-
-    return annRects;
-}
-
-/*@pre: paragraph is a <p> element containing only plain text*/
-function getCharacterPositionInParagraph (paragraph, offset) {
-    let html = paragraph.innerHTML;
-    let [html1, html2] = [html.slice(0, offset), html.slice(offset)];
-    paragraph.innerHTML = html1+"<span id='marker'></span>"+html2;
-    let box = viewportRelativeBox(document.getElementById('marker'));
-    paragraph.innerHTML = html;
-
-    return box;
-}
-
-window.getCharacterPositionInParagraph = getCharacterPositionInParagraph;
 
 /*@pre: range's common ancestor is a <p> element containing only plain text*/
 function getOffsetInParentParagraph(range) {
@@ -129,18 +56,25 @@ class AtdViewer extends Component {
         //});
     }
 
+    callbacks = {
+        onHoverStart: (id) => {this.props.callbacks.onHoverStart(id)},
+        onHoverEnd: (id) => {this.props.callbacks.onHoverEnd(id)},
+        deleteAnnotation: (id) => {this.deleteAnnotation(id)},
+        addRelation: (type, sourceId, destId) => {
+            let rel = this.props.model.mkRelation(type, sourceId, destId);
+            this.props.model.addRelation(rel);
+        }
+    }
+
     createAnnotationHighlight(annotationModel) {
-        let {paragraphId, start, end, id, annRects} = annotationModel;
+        let {id, annRects} = annotationModel;
 
-        let self = this;
-        let callbacks = {
-            getHover: function() {return self.props.model.getHover(id)},
-            setHover: function(hoverState) {self.props.model.setHover(id, hoverState)},
-            deleteAnnotation: function() {self.deleteAnnotation(id)}
-        };
-
-        return (<Annotation key={id} annRects={annRects} id={id} callbacks={callbacks}
-                            model={this.props.model} type={annotationModel.type}/>);
+        return (<Annotation key={id}
+                            hover={this.props.hover[id]}
+                            annRects={annRects}
+                            id={id}
+                            callbacks={this.callbacks}
+                            type={annotationModel.type}/>);
     }
 
     handleMouseUp (e) {
@@ -169,14 +103,7 @@ class AtdViewer extends Component {
     newAnnotation (e, data) {
         if (this.state.nextAnnModel) {
             let {paragraphId, start, end} = this.state.nextAnnModel;
-            let paragraph = document.getElementById(paragraphId);
-            let text = paragraph.textContent.substring(start, end);
-            let startBox = getCharacterPositionInParagraph(paragraph, start);
-            let endBox = getCharacterPositionInParagraph(paragraph, end);
-
-            let annRects = computeRects(paragraph, startBox, endBox);
-
-            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end, text, annRects);
+            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end);
             this.props.model.addAnnotation(ann);
 
             this.setState({
@@ -188,45 +115,60 @@ class AtdViewer extends Component {
 
     render () {
 
-        let paragraphs = this.props.sentences.map(
-            function(sentence, index) {
-                return(<p key={"paragraph-"+index} id={"paragraph-"+index}>{sentence}</p>);
-            });
+        if (!this.props.paragraphs) {
+            return (<p> Loading data ... </p>)
+        } else {
 
-        let annotations = this.props.model.annotations
-            .sort((x, y) => (y.end - y.start)- (x.end - x.start))
-            .map((annModel) => this.createAnnotationHighlight(annModel));
+            window.paragraphs = this.props.paragraphs;
 
-        return(
-            <div style={{width:"100%", height: "100%"}}>
-                <ContextMenu id="new-annotation-menu">
-                    <MenuItem data={{type: 'Action'}} onClick={this.newAnnotation}>
-                        New Action
-                    </MenuItem>
-                    <MenuItem data={{type: 'Entity'}} onClick={this.newAnnotation}>
-                        New Entity
-                    </MenuItem>
-                    <MenuItem data={{type: 'Condition'}} onClick={this.newAnnotation}>
-                        New Condition
-                    </MenuItem>
-                </ContextMenu>
+            let paragraphs = this.props.paragraphs.map(
+                function(sentence, index) {
+                    return(<p key={"paragraph-"+index} id={"paragraph-"+index}>{sentence}</p>);
+                });
 
-                <div id="relations-root" style={{position: "absolute", width: "100%", height: "100%", pointerEvents: "none"}}>
-                    {this.props.model.relations.map((rel) =>
-                        <Relation id={rel.id} sourceId={rel.sourceId} destId={rel.destId} model={this.props.model} highlighted={this.props.model.isRelHighlighted(rel.id)} />)}
+            let annotations = this.props.model.annotations
+                                  .sort((x, y) => (y.end - y.start)- (x.end - x.start))
+                                  .map((annModel) => this.createAnnotationHighlight(annModel));
+
+            return(
+                <div style={{width:"100%", height: "100%"}}>
+                    <ContextMenu id="new-annotation-menu">
+                        <MenuItem data={{type: 'Action'}} onClick={this.newAnnotation}>
+                            New Action
+                        </MenuItem>
+                        <MenuItem data={{type: 'Entity'}} onClick={this.newAnnotation}>
+                            New Entity
+                        </MenuItem>
+                        <MenuItem data={{type: 'Condition'}} onClick={this.newAnnotation}>
+                            New Condition
+                        </MenuItem>
+                    </ContextMenu>
+
+                    <div id="relations-root" style={{position: "absolute", width: "100%", height: "100%", pointerEvents: "none"}}>
+                        {this.props.model.relations.map((rel) =>
+                            <Relation
+                                id={rel.id}
+                                sourceId={rel.sourceId}
+                                destId={rel.destId}
+                                highlighted={this.props.hover[rel.id]}
+                                sourceBox={this.props.model.getAnnBoundingBox(rel.sourceId)}
+                                destBox={this.props.model.getAnnBoundingBox(rel.destId)}
+                                callbacks={this.callbacks}
+                            />)}
+                    </div>
+
+                    <ContextMenuTrigger id="new-annotation-menu" ref={c => this.contextTrigger = c} holdToDisplay={-1}>
+                        <div id="annotations-root" style={{position: "relative"}}>
+                            {annotations}
+                        </div>
+                        <div id="atd-viewer" style={AtdViewerStyle} onMouseUp={this.handleMouseUp}>
+                            {paragraphs}
+                        </div>
+                    </ContextMenuTrigger>
                 </div>
 
-                <ContextMenuTrigger id="new-annotation-menu" ref={c => this.contextTrigger = c} holdToDisplay={-1}>
-                    <div id="annotations-root" style={{position: "relative"}}>
-                    {annotations}
-                    </div>
-                    <div id="atd-viewer" style={AtdViewerStyle} onMouseUp={this.handleMouseUp}>
-                        {paragraphs}
-                    </div>
-                </ContextMenuTrigger>
-            </div>
-
-        );
+            );
+        }
     }
 }
 

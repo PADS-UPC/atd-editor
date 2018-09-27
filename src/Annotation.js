@@ -71,6 +71,7 @@ class Annotation extends Component {
         let eq = true;
 
         eq = eq && this.props.hover === nextProps.hover;
+        eq = eq && this.props.hidden === nextProps.hidden;
 
         return !eq;
     }
@@ -87,7 +88,7 @@ class Annotation extends Component {
                                                                backgroundColor: Constants.typeColors[this.props.type],}}/>);
 
         return (
-            <div onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >
+            <div hidden={this.props.hidden} onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >
                 <ContextMenu id={"annotation-"+this.props.id+"-context-menu"}>
                     <MenuItem data={{action: 'deleteAnnotation'}} onClick={this.handleClick}>
                         Delete Annotation

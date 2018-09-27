@@ -8,6 +8,14 @@ function Constants() {
                    "Action": ["Exclusive", "Parallel", "Sequential"]}
     };
 
+    constants.relationTypes = {
+        "Coreference": ["Entity", "Entity"],
+        "Agent": ["Action", "Entity"],
+        "Patient": ["Action", "Entity"],
+        "Exclusive": ["Action", "Action"],
+        "Parallel": ["Action", "Action"],
+        "Sequential": ["Action", "Action"]
+    };
 
     constants.typeColors = {
         "Action": "#d97881",

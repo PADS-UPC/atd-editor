@@ -20,6 +20,8 @@ class Relation extends Component {
         let eq = true;
 
         eq = eq && this.props.highlighted === nextProps.highlighted;
+        eq = eq && this.props.hidden === nextProps.hidden;
+
 
         return !eq;
 
@@ -57,7 +59,7 @@ class Relation extends Component {
         }
 
         return (
-            <div style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: this.props.highlighted ? "1.0" : "0.2"}}>
+            <div hidden={this.props.hidden} style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: this.props.highlighted ? "1.0" : "0.2"}}>
                 <svg width='100%' height='100%'
                      style={{position: "relative", pointerEvents: "none"}}>
                     <defs>

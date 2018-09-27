@@ -10,12 +10,13 @@ var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
 
 let VisibilityToggle = function(props) {
-        return (
-            <ToggleButton
-                selected={props.model.hiddenTypes[props.type]}
-                onClick={() => props.model.setHiddenState(props.type, !props.model.hiddenTypes[props.type])}>
-                {props.type}
-            </ToggleButton>);
+    let selected = props.model.hiddenTypes[props.type];
+    return (
+        <ToggleButton
+            selected={selected}
+            onClick={() => props.model.setHiddenState(props.type, !selected)}>
+            {selected ? (<span style={{textDecoration: "line-through"}}>{props.type}</span>) : props.type}
+        </ToggleButton>);
     }
 
 

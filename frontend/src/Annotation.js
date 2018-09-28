@@ -79,13 +79,21 @@ class Annotation extends Component {
     render() {
         let annRects = this.props.annRects;
         let numLines = this.props.annRects.length;
-        let annDivs = annRects.map((rect, idx) => <div key={`line-${idx}`}
-                                                       style={{width: rect.width,
-                                                               height: rect.height,
-                                                               top: rect.top,
-                                                               left: rect.left,
-                                                               position: "absolute",
-                                                               backgroundColor: Constants.typeColors[this.props.type],}}/>);
+        let annDivs = annRects.map(
+            (rect, idx) => <div key={`line-${idx}`}
+                                style={{width: rect.width,
+                                        height: rect.height,
+                                        top: rect.top,
+                                        left: rect.left,
+                                        position: "absolute",
+                                        backgroundColor: Constants.typeColors[this.props.type],}}
+                                onClick={() => {
+                                        // TODO: Please forgive me
+                                        document.getElementById("ann-card-"+this.props.id)
+                                                .scrollIntoView({behavior: "smooth",
+                                                                 inline: "nearest",
+                                                                 block: "nearest"});
+                                }}/>);
 
         return (
             <div hidden={this.props.hidden} onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >

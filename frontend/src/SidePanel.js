@@ -18,11 +18,11 @@ class SidePanel extends Component {
         this.createRelationBox = this.createRelationBox.bind(this);
     }
 
-    createAnnotationBox (index, key) {
-        let ann = this.annotationsToRender[index];
+    createAnnotationBox (ann) {
+        //let ann = this.annotationsToRender[index];
 
         return (
-            <div style={{backgroundColor: this.props.hover[ann.id] ? Constants.typeColors[ann.type] : Constants.dullTypeColors[ann.type],
+            <div key={"sidepanel"+ann.id} style={{backgroundColor: this.props.hover[ann.id] ? Constants.typeColors[ann.type] : Constants.dullTypeColors[ann.type],
                          textAlign: "left",
                          padding: "1em",
                          margin: "1em",
@@ -40,21 +40,29 @@ class SidePanel extends Component {
                 </Row>
                 {ann.type === "Action" ?
                  <div>
-                    <label style={{fontWeight: "normal"}}>Optional <input name="Optional" type="checkbox"/> </label>
+                     <label style={{fontWeight: "normal"}}>Optional
+                         <input name="Optional"
+                                type="checkbox"
+                                checked={this.props.model.hasAttribute(ann.id, "Optional")}
+                                onChange={() => {this.props.model.toggleAttribute(ann.id, "Optional"); this.forceUpdate()}}
+                         />
+                         
+                     </label>
+
                     <br/>
-                    <label style={{fontWeight: "normal"}}>Final <input name="Optional" type="checkbox"/> </label>
                  </div> :
                  <div></div>}
             </div>);
     }
 
-    createRelationBox (index, key) {
-        let rel = this.relationsToRender[index];
+    createRelationBox (rel) {
+        //let rel = this.relationsToRender[index];
+
         let sourceAnn = this.props.model.getAnnotation(rel.sourceId);
         let destAnn = this.props.model.getAnnotation(rel.destId);
 
         return (
-            <div style={{backgroundColor: this.props.hover[rel.id] ? "#dddddd" : "white",
+            <div key={"sidepanel"+rel.id} style={{backgroundColor: this.props.hover[rel.id] ? "#dddddd" : "white",
                          textAlign: "left",
                          padding: "1em",
                          margin: "1em",
@@ -84,23 +92,17 @@ class SidePanel extends Component {
         this.relationsToRender = this.props.model.relations.filter((rel) => !this.props.model.shouldBeHidden(rel.type))
 
         return (
-            <Tabs id="tabs">
+            <Tabs style={{overflowY: "hidden"}} id="tabs">
                 <Tab eventKey={1} title="Annotations">
                     <div style={{overflowY: "scroll", height: "800px",
                                  direction: "rtl"}}>
-                        <ReactList
-                            itemRenderer={this.createAnnotationBox}
-                            length={this.annotationsToRender.length}
-                            type='uniform'/>
+                        {this.annotationsToRender.map((ann) => this.createAnnotationBox(ann))}
                     </div>
                 </Tab>
                 <Tab eventKey={2} title="Relations">
                     <div style={{overflowY: "scroll", height: "800px",
                                  direction: "rtl"}}>
-                        <ReactList
-                            itemRenderer={this.createRelationBox}
-                            length={this.relationsToRender.length}
-                            type='uniform'/>
+                        {this.relationsToRender.map((rel) => this.createRelationBox(rel))}
                     </div>
                 </Tab>
             </Tabs>

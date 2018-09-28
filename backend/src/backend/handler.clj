@@ -5,7 +5,7 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
-(def base-path "/home/josep/Repositories/atd-editor/atd-editor/build/")
+(def base-path "/home/josep/Repositories/atd-editor/atd-editor/frontend/build/")
 
 (defroutes app-routes
   (GET "/" [] (io/file base-path "index.html"))
@@ -19,6 +19,7 @@
   (GET "/api/load" [] (json/write-str {:status "ok"
                                        :data (slurp "./savedata.json")}))
   (GET "/api/getText" [] (slurp "./text.txt"))
+  (GET "/bootstrap.min.css" [] (io/file "./bootstrap.min.css"))
   (route/not-found "Not Found"))
 
 (def app

@@ -15,6 +15,18 @@ function Utils () {
         };
     };
 
+    utils.viewportRelativeBox2 = function(element) {
+        let rparent = document.getElementById('annotations-root').getBoundingClientRect();
+        let relement = element.getBoundingClientRect();
+
+        return {
+            top: relement.top - rparent.top,
+            right: relement.right - rparent.right,
+            bottom: relement.bottom - rparent.bottom,
+            left: relement.left - rparent.left
+        };
+    };
+
 
 
     /*@pre: paragraph is a <p> element containing only plain text*/
@@ -122,9 +134,9 @@ function Utils () {
         else if (args[0].match(/^R/)) {
             return utils.parseBratRelation(paragraphs, args);
         }
-        //else if (args[0].match(/^A/)) {
-            //return utils.praseBratAttribute(args);
-        //}
+        else if (args[0].match(/^A/)) {
+            return utils.parseBratAttribute(paragraphs, args);
+        }
         else {
             console.log("Warning: Ignoring input line "+JSON.stringify(args));
             return null;
@@ -155,6 +167,14 @@ function Utils () {
                 paragraphId: fixedRange.paragraphId};
     };
 
+    utils.parseBratAttribute = function(paragraphs, args) {
+        let [id, type, annId] = args;
+        return {metaType: "Attribute",
+                id,
+                type,
+                annId};
+    };
+
     utils.parseBratFile = function(paragraphs, bratFile) {
         let lines = bratFile.split("\n");
         let parsedLines = lines
@@ -163,7 +183,7 @@ function Utils () {
         return parsedLines.filter((x) => x);
     };
 
-    utils.exportBratFile = function(annotations, relations) {
+    utils.exportBratFile = function(annotations, relations, attributes) {
         let out = "";
         annotations.forEach((ann) => {
             // XXX: window.paragraphs!!!
@@ -174,6 +194,9 @@ function Utils () {
         relations.forEach((rel) => {
             out += rel.id + "\t" + rel.type + " Arg1:" + rel.sourceId +
                 " Arg2:" + rel.destId + "\n";
+        });
+        attributes.forEach((attr) => {
+            out += attr.id + "\t" + attr.type + " " + attr.annId + "\n";
         });
         return out;
     };

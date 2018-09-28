@@ -11,8 +11,12 @@ function mkModel (reRender) {
     /** The relations */
     model.relations = [];
 
+    /** Attributes are modifiers on annotations */
+    model.attributes = [];
+
     model.annCount = 0;
     model.relCount = 0;
+    model.attrCount = 0;
 
 
 
@@ -33,6 +37,11 @@ function mkModel (reRender) {
     model.mkRelation = function (type, sourceId, destId) {
         let id = "R"+model.relCount++;
         return {id, type, sourceId, destId};
+    };
+
+    model.mkAttribute = function(type, annId) {
+        let id = "A"+model.attrCount++;
+        return {id, type, annId};
     };
 
     /** Source: https://stackoverflow.com/questions/37318808/what-is-the-in-place-alternative-to-array-prototype-filter */
@@ -94,9 +103,21 @@ function mkModel (reRender) {
     };
 
     model.setHiddenState = function(type, hiddenState) {
-        console.log("waaaaaaat");
         model.hiddenTypes[type] = hiddenState;
         reRender();
+    };
+
+    model.hasAttribute = function(id, attrType) {
+        let attrs = model.attributes.filter((attr) => attr.annId === id && attr.type === attrType);
+        return attrs.length > 0;
+    };
+
+    model.toggleAttribute = function(id, attrType) {
+        if (model.hasAttribute(id, attrType)) {
+            model.attributes = model.attributes.filter((attr) => !(id === attr.annId && attrType === attr.type));
+        } else {
+            model.attributes.push(model.mkAttribute(attrType, id));
+        }
     };
 
     /** Returns whether a type should be hidden. Note that, for example, in relations,
@@ -161,7 +182,7 @@ function mkModel (reRender) {
                                              left: rect.left,
                                              right: rect.left + rect.width}));
 
-        let bbox = annRects[0];
+        let bbox = Object.assign({}, annRects[0]);
         rects.forEach(function(rect) {
             if (rect.top < bbox.top) {bbox.top = rect.top;}
             if (rect.bottom > bbox.bottom) {bbox.bottom = rect.bottom;}
@@ -187,7 +208,9 @@ function mkModel (reRender) {
     model.saveRequest = function () {
         let p = fetch("/api/save", {
             method: "POST",
-            body: Utils.exportBratFile(model.annotations, model.relations)
+            body: Utils.exportBratFile(model.annotations,
+                                       model.relations,
+                                       model.attributes)
         }).then((res) => res.json());
         return p;
     };
@@ -215,12 +238,17 @@ function mkModel (reRender) {
         let parsedData = Utils.parseBratFile(paragraphs, bratString);
 
         let newAnnotations = [];
+        let newAttributes = [];
         let newRelations = [];
 
         // Load the imported annotations and relations
         parsedData.forEach((l) => {
             if (l.metaType === "Annotation") {
                 let {id, paragraphId, type, start, end, text} = l;
+
+                /// XXX
+                if (text === "an individual or family membership") {window.debugFoo = 1;}
+
                 let ann = model.mkAnnotation(paragraphId, type, start, end);
                 ann.id = id;
                 newAnnotations.push(ann);
@@ -233,14 +261,23 @@ function mkModel (reRender) {
                 rel.id = id;
                 newRelations.push(rel);
             }
+            else if (l.metaType === "Attribute") {
+                let {id, type, annId} = l;
+                let attr = model.mkAttribute(type, annId);
+                attr.id = id;
+                newAttributes.push(attr);
+            }
 
         });
 
         // Fix annCount and relCount for future ids
         model.annCount = newAnnotations.length === 0 ? 0 : 1 + Math.max(...newAnnotations.map((ann) => parseInt(ann.id.replace("T", ""), 10)));
         model.relCount = newRelations.length === 0 ? 0 : 1 + Math.max(...newRelations.map((rel) => parseInt(rel.id.replace("R", ""), 10)));
+        model.attrCount = newAttributes.length === 0 ? 0 : 1 + Math.max(...newAttributes.map((rel) => parseInt(rel.id.replace("A", ""), 10)));
+
         model.annotations = newAnnotations;
         model.relations = newRelations;
+        model.attributes = newAttributes;
 
         reRender();
     };

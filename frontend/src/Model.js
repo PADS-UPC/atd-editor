@@ -193,6 +193,11 @@ function mkModel (reRender) {
         return bbox;
     };
 
+    model.getAnnBoxes = function (id) {
+        let index = model.annotations.findIndex((ann) => ann.id === id);
+        return model.annotations[index].annRects;
+    };
+
     model.isRelHighlighted = function (relId) {
         //let index = model.relations.findIndex((rel) => rel.id === relId);
         //let rel = model.relations[index];

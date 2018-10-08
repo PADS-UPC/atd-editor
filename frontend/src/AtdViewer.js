@@ -157,6 +157,7 @@ class AtdViewer extends Component {
                                 id={rel.id}
                                 sourceId={rel.sourceId}
                                 destId={rel.destId}
+                                type={rel.type}
                                 highlighted={this.props.hover[rel.id]}
                                 sourceBoxes={this.props.model.getAnnBoxes(rel.sourceId)}
                                 destBoxes={this.props.model.getAnnBoxes(rel.destId)}

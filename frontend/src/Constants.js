@@ -5,16 +5,19 @@ function Constants() {
     constants.relationCompatibilities = {
         "Entity": {"Entity": ["Coreference"]},
         "Action": {"Entity": ["Agent", "Patient"],
-                   "Action": ["Exclusive", "Parallel", "Sequential"]}
+                   "Action": ["Exclusive", "Parallel", "Sequential"],
+                   "Condition": ["Exclusive", "Parallel", "Sequential"]},
+        "Condition": {"Action": ["Exclusive", "Parallel", "Sequential"],
+                      "Condition": ["Exclusive", "Parallel", "Sequential"]}
     };
 
     constants.relationTypes = {
-        "Coreference": ["Entity", "Entity"],
-        "Agent": ["Action", "Entity"],
-        "Patient": ["Action", "Entity"],
-        "Exclusive": ["Action", "Action"],
-        "Parallel": ["Action", "Action"],
-        "Sequential": ["Action", "Action"]
+        "Coreference": [["Entity"], ["Entity"]],
+        "Agent": [["Action"], ["Entity"]],
+        "Patient": [["Action"], ["Entity"]],
+        "Exclusive": [["Action", "Condition"], ["Action", "Condition"]],
+        "Parallel": [["Action", "Condition"], ["Action", "Condition"]],
+        "Sequential": [["Action", "Condition"], ["Action", "Condition"]]
     };
 
     constants.typeColors = {

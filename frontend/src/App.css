@@ -32,3 +32,9 @@
     stroke-width:2; 
     marker-end:url(#markerArrow);
 }
+
+.popup-content {
+    padding: 5% !important;
+    width: 30% !important;
+
+}

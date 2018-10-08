@@ -1,0 +1,125 @@
+T76	Condition 196 229	he wants an individual membership
+T77	Condition 277 305	he wants a family membership
+T31	Entity 412 428	this information
+T20	Entity 247 271	his personal information
+T68	Entity 1018 1081	a request to mail the Zoo Club's magazine to the visitor's home
+T18	Action 239 246	prepare
+T65	Entity 950 952	it
+T46	Action 758 767	processes
+T61	Entity 896 918	the ZooClub department
+T29	Action 407 411	give
+T57	Action 874 881	payment
+T50	Action 811 813	is
+T49	Action 772 779	payment
+T66	Action 1012 1017	makes
+T2	Entity 5 14	a visitor
+T37	Entity 545 564	the payment request
+T24	Action 325 332	prepare
+T30	Entity 384 396	The customer
+T43	Entity 686 708	The billing department
+T32	Action 480 490	introduces
+T52	Action 823 830	charges
+T70	Entity 1036 1059	the Zoo Club's magazine
+T58	Action 885 894	confirmed
+T7	Action 92 97	taken
+T41	Entity 630 683	the visitor's information to the marketing department
+T59	Entity 870 881	the payment
+T13	Entity 147 149	he
+T67	Entity 987 1011	the Marketing department
+T40	Entity 593 615	The ZooClub department
+T3	Entity 21 62	to become a member of Barcelona's ZooClub
+T12	Action 150 155	wants
+T25	Entity 315 317	he
+T72	Entity 1088 1099	the visitor
+T51	Entity 800 810	everything
+T63	Action 942 949	deliver
+T42	Action 709 714	sends
+T48	Entity 768 791	the payment information
+T71	Action 1100 1108	receives
+T6	Action 68 77	following
+T33	Entity 457 479	The ZooClub department
+T9	Action 132 138	decide
+T27	Action 368 373	spawn
+T45	Action 719 726	payment
+T35	Action 539 544	takes
+T69	Action 1031 1035	mail
+T10	Entity 114 126	the customer
+T1	Action 15 20	wants
+T73	Entity 1109 1117	the card
+T54	Entity 831 862	the payment into user's account
+T74	Action 1126 1128	go
+T39	Action 621 629	forwards
+T38	Action 549 556	payment
+T26	Entity 333 348	the information
+T62	Entity 929 937	the card
+T8	Entity 64 83	the following steps
+T75	Entity 1119 1121	he
+T44	Entity 715 734	the payment request
+T4	Action 24 30	become
+T11	Entity 139 190	whether he wants an individual or family membership
+T19	Entity 231 233	he
+T34	Entity 491 518	the visitor's personal data
+T55	Action 835 842	payment
+T14	Entity 156 190	an individual or family membership
+T47	Entity 749 757	The bank
+T60	Action 923 928	print
+R33	Patient Arg1:T55 Arg2:T54	
+R2	Patient Arg1:T1 Arg2:T3	
+R40	Patient Arg1:T66 Arg2:T68	
+R17	Agent Arg1:T27 Arg2:T25	
+R18	Agent Arg1:T29 Arg2:T30	
+R32	Patient Arg1:T52 Arg2:T54	
+R8	Patient Arg1:T12 Arg2:T14	
+R16	Patient Arg1:T24 Arg2:T26	
+R38	Patient Arg1:T63 Arg2:T65	
+R12	Patient Arg1:T18 Arg2:T20	
+R39	Agent Arg1:T66 Arg2:T67	
+R34	Patient Arg1:T58 Arg2:T59	
+R22	Agent Arg1:T35 Arg2:T33	
+R26	Agent Arg1:T42 Arg2:T43	
+R15	Agent Arg1:T24 Arg2:T25	
+R21	Patient Arg1:T32 Arg2:T34	
+R36	Patient Arg1:T60 Arg2:T62	
+R28	Agent Arg1:T46 Arg2:T47	
+R1	Agent Arg1:T1 Arg2:T2	
+R42	Agent Arg1:T71 Arg2:T72	
+R43	Patient Arg1:T71 Arg2:T73	
+R41	Patient Arg1:T69 Arg2:T70	
+R25	Patient Arg1:T39 Arg2:T41	
+R31	Agent Arg1:T52 Arg2:T47	
+R5	Agent Arg1:T9 Arg2:T10	
+R20	Agent Arg1:T32 Arg2:T33	
+R37	Agent Arg1:T63 Arg2:T61	
+R6	Patient Arg1:T9 Arg2:T11	
+R3	Patient Arg1:T4 Arg2:T2	
+R7	Agent Arg1:T12 Arg2:T13	
+R27	Patient Arg1:T42 Arg2:T44	
+R11	Agent Arg1:T18 Arg2:T19	
+R35	Agent Arg1:T60 Arg2:T61	
+R19	Patient Arg1:T29 Arg2:T31	
+R24	Agent Arg1:T39 Arg2:T40	
+R4	Patient Arg1:T7 Arg2:T8	
+R30	Patient Arg1:T50 Arg2:T51	
+R23	Patient Arg1:T35 Arg2:T37	
+R29	Patient Arg1:T46 Arg2:T48	
+R44	Agent Arg1:T74 Arg2:T75	
+R45	Coreference Arg1:T41 Arg2:T2	
+R46	Coreference Arg1:T2 Arg2:T72	
+R47	Coreference Arg1:T72 Arg2:T34	
+R48	Coreference Arg1:T34 Arg2:T68	
+R49	Coreference Arg1:T13 Arg2:T25	
+R50	Coreference Arg1:T25 Arg2:T30	
+R51	Coreference Arg1:T30 Arg2:T20	
+R52	Coreference Arg1:T20 Arg2:T10	
+R53	Coreference Arg1:T10 Arg2:T19	
+R54	Coreference Arg1:T26 Arg2:T31	
+R55	Coreference Arg1:T31 Arg2:T20	
+R56	Coreference Arg1:T33 Arg2:T61	
+R57	Coreference Arg1:T61 Arg2:T40	
+R58	Coreference Arg1:T37 Arg2:T44	
+R59	Coreference Arg1:T44 Arg2:T68	
+R60	Coreference Arg1:T67 Arg2:T41	
+R61	Coreference Arg1:T54 Arg2:T59	
+R62	Coreference Arg1:T75 Arg2:T62	
+R63	Coreference Arg1:T62 Arg2:T73	
+R64	Coreference Arg1:T41 Arg2:T48	

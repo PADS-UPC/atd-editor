@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 import NavBar from "./NavBar.js";
+import Popup from "reactjs-popup";
 import AtdViewer from "./AtdViewer.js";
 import SidePanel from "./SidePanel.js";
 import ReactList from "react-list";
@@ -34,6 +35,7 @@ class App extends Component {
     constructor () {
         super();
         this.state = {
+            needLogin: true,
             paragraphs: null,
             model: mkModel(this.forceUpdate.bind(this)),
             hover: {}
@@ -69,6 +71,26 @@ class App extends Component {
 
         return (
             <div className="App" style={{"backgroundColor": "#eeeeee", "paddingBottom": "100%"}}>
+                <Popup
+                    open={this.state.needLogin}>
+                    <h3 style={{marginBottom: "2em", marginTop: "-1em"}}>Please log-in before continuing</h3>
+
+                    <Row style={{padding: "2%"}}>
+                        <Col md={4}> Username </Col>
+                        <Col md={8}> <input type="text"></input></Col>
+                    </Row>
+                    <Row style={{padding: "2%"}}>
+                        <Col md={4}> Password </Col>
+                        <Col md={8}> <input type="text"></input></Col>
+                    </Row>
+                    <Row style={{padding: "10%"}}>
+                        <Button>Login</Button>
+                    </Row>
+                    <Row style={{marginTop: "1em"}}>
+                        Or please register at <a href="http://modeljudge.cs.upc.edu">Model Judge</a>!
+                    </Row>
+
+                </Popup>
                 <NavBar model={this.state.model}/>
                 <Row>
                     <Col md={3} xs={3}>

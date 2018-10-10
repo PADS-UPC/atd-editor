@@ -36,5 +36,10 @@
 .popup-content {
     padding: 5% !important;
     width: 30% !important;
+}
 
+.navbar .container {
+    width: 100%;
+    padding-left: 3em;
+    padding-right: 2em;
 }

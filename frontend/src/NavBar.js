@@ -100,6 +100,12 @@ class NavBar extends Component {
                     </ToggleButtonGroup>
                 </NavItem>
             </Nav>
+
+            <Nav pullRight>
+                <NavItem href="/logout">
+                    {this.props.username} (Logout)
+                </NavItem>
+            </Nav>
         </Navbar>)
     }
 }

@@ -23,7 +23,9 @@
 
 (defn validate-user [{:keys [username password] :as req}]
   (println req)
-  (let [user (first
+  {:identity username
+   :data username}
+  #_(let [user (first
               (jdbc/query @mysql-db
                           ["SELECT * FROM `user` WHERE username=?" username]))]
     (when (and user

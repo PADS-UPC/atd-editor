@@ -74,14 +74,15 @@ class Relation extends Component {
                     <svg width='100%' height='100%'
                          style={{position: "relative", pointerEvents: "none"}}>
                         <defs>
-                            <marker id="markerArrow" markerWidth="13" markerHeight="13"
+                            <marker id={"markerArrow"+this.props.id} markerWidth="13" markerHeight="13"
                                     style={{pointerEvents: "fill"}}
                                     refX="2" refY="6" orient="auto">
                                 <path d="M0,3 l0,6 l8,-3 l-8,-3" style={{fill: "#000000"}} />
                             </marker>
                         </defs>
 
-                        <line style={{pointerEvents: "none"}}
+                        <line style={{pointerEvents: "none",
+                                      markerEnd: `url(#markerArrow${this.props.id})`}}
                               x1={minPair[0].x} y1={minPair[0].y}
                               x2={minPair[1].x} y2={minPair[1].y}
                               className="arrow" />

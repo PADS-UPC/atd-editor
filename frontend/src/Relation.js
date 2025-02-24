@@ -88,6 +88,13 @@ class Relation extends Component {
                         <line style={{pointerEvents: "stroke", strokeWidth: "10"}}
                               x1={minPair[0].x} y1={minPair[0].y}
                               x2={minPair[1].x} y2={minPair[1].y}
+                              onClick={(ev) => {
+                                      // TODO: Please forgive me
+                                      document.getElementById("rel-card-"+this.props.id)
+                                              .scrollIntoView({behavior: "smooth",
+                                                               inline: "nearest",
+                                                               block: "nearest"});
+                              }}
                               onContextMenu={(ev) => {
                                       this.delRelContextMenu.handleContextClick(ev);
                                       return false;

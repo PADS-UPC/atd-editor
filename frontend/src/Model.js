@@ -125,8 +125,8 @@ function mkModel (reRender) {
     model.shouldBeHidden = function(type) {
         if (model.hiddenTypes[type]) return true;
         else if (Constants.relationTypes[type] &&
-                 (model.hiddenTypes[Constants.relationTypes[type][0]]  ||
-                  model.hiddenTypes[Constants.relationTypes[type][1]])) return true;
+            Constants.relationTypes[type].flat().some((t) => model.hiddenTypes[t]))
+            return true;
         else return false;
     };
 

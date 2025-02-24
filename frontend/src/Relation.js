@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { PureComponent,  Component } from 'react';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 function generateCandidateAnchors (box) {
     let hw = box.width / 2;
@@ -59,30 +60,42 @@ class Relation extends Component {
         }
 
         return (
-            <div hidden={this.props.hidden} style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: this.props.highlighted ? "1.0" : "0.2"}}>
-                <svg width='100%' height='100%'
-                     style={{position: "relative", pointerEvents: "none"}}>
-                    <defs>
-                        <marker id="markerArrow" markerWidth="13" markerHeight="13"
-                                style={{pointerEvents: "fill"}}
-                                refX="2" refY="6" orient="auto">
-                            <path d="M0,3 l0,6 l8,-3 l-8,-3" style={{fill: "#000000"}} />
-                        </marker>
-                    </defs>
+            <div>
+                <ContextMenu id={"relationdel-"+this.props.id+"-context-menu"}>
+                    <MenuItem data={{action: 'deleteAnnotation'}}
+                              onClick={() => {this.props.callbacks.deleteRelation(this.props.id); this.forceUpdate();}}>
+                        Delete Relation
+                    </MenuItem>
+                </ContextMenu>
+                <ContextMenuTrigger id={"relationdel-"+this.props.id+"-context-menu"} ref={c => this.delRelContextMenu = c}/>
+                <div hidden={this.props.hidden} style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", opacity: this.props.highlighted ? "1.0" : "0.2"}}>
 
-                    <line style={{pointerEvents: "none"}}
-                          x1={minPair[0].x} y1={minPair[0].y}
-                          x2={minPair[1].x} y2={minPair[1].y}
-                          className="arrow" />
+                    <svg width='100%' height='100%'
+                         style={{position: "relative", pointerEvents: "none"}}>
+                        <defs>
+                            <marker id="markerArrow" markerWidth="13" markerHeight="13"
+                                    style={{pointerEvents: "fill"}}
+                                    refX="2" refY="6" orient="auto">
+                                <path d="M0,3 l0,6 l8,-3 l-8,-3" style={{fill: "#000000"}} />
+                            </marker>
+                        </defs>
 
-                    <line style={{pointerEvents: "stroke", strokeWidth: "10"}}
-                          x1={minPair[0].x} y1={minPair[0].y}
-                          x2={minPair[1].x} y2={minPair[1].y}
-                          onMouseOver={() => this.props.callbacks.onHoverStart(this.props.id)}
-                          onMouseOut={() => this.props.callbacks.onHoverEnd(this.props.id)}/>
+                        <line style={{pointerEvents: "none"}}
+                              x1={minPair[0].x} y1={minPair[0].y}
+                              x2={minPair[1].x} y2={minPair[1].y}
+                              className="arrow" />
 
-
-                </svg>
+                        <line style={{pointerEvents: "stroke", strokeWidth: "10"}}
+                              x1={minPair[0].x} y1={minPair[0].y}
+                              x2={minPair[1].x} y2={minPair[1].y}
+                              onContextMenu={(ev) => {
+                                      this.delRelContextMenu.handleContextClick(ev);
+                                      return false;
+                              }}
+                              onMouseOver={() => this.props.callbacks.onHoverStart(this.props.id)}
+                              onMouseOut={() => this.props.callbacks.onHoverEnd(this.props.id)}/>
+                    </svg>
+                </div>
             </div>);
     }
 }

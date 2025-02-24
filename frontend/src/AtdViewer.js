@@ -47,6 +47,11 @@ class AtdViewer extends Component {
         this.newAnnotation = this.newAnnotation.bind(this);
     }
 
+    deleteRelation(id) {
+        this.props.model.deleteRelation(id);
+        this.forceUpdate();
+    }
+
     deleteAnnotation(id) {
         this.props.model.deleteAnnotation(id);
         this.forceUpdate();
@@ -60,6 +65,7 @@ class AtdViewer extends Component {
         onHoverStart: (id) => {this.props.callbacks.onHoverStart(id)},
         onHoverEnd: (id) => {this.props.callbacks.onHoverEnd(id)},
         deleteAnnotation: (id) => {this.deleteAnnotation(id)},
+        deleteRelation: (id) => {this.deleteRelation(id)},
         addRelation: (type, sourceId, destId) => {
             let rel = this.props.model.mkRelation(type, sourceId, destId);
             this.props.model.addRelation(rel);

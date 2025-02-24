@@ -72,8 +72,7 @@ class App extends Component {
                 <NavBar model={this.state.model}/>
                 <Row>
                     <Col md={3} xs={3}>
-                        <div style={{overflowY: "scroll", height: "800px",
-                                     direction: "rtl"}}>
+                        <div>
                             <SidePanel model={this.state.model}
                                        callbacks={this.callbacks}
                                        hover={this.state.hover}/>

@@ -14,6 +14,7 @@ let VisibilityToggle = function(props) {
     return (
         <ToggleButton
             selected={selected}
+            value={props.type}
             onClick={() => props.model.setHiddenState(props.type, !selected)}>
             {selected ? (<span style={{textDecoration: "line-through"}}>{props.type}</span>) : props.type}
         </ToggleButton>);

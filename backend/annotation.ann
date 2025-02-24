@@ -1,88 +1,125 @@
-T99	Condition 194 227	he wants an individual membership
-T100	Condition 274 302	he wants a family membership
-T53	Entity 708 727	the payment request
-T10	Entity 113 125	the customer
-T67	Action 815 822	charges
-T25	Entity 312 314	he
-T35	Action 475 485	introduces
-T18	Action 237 244	prepare
-T32	Action 403 407	give
-T80	Entity 887 909	the ZooClub department
-T40	Entity 540 559	the payment request
-T34	Entity 408 424	this information
-T33	Entity 380 392	The customer
-T82	Action 933 940	deliver
-T98	Entity 1109 1111	he
-T88	Entity 1026 1049	the Zoo Club's magazine
-T19	Entity 229 231	he
-T63	Entity 760 783	the payment information
-T45	Action 615 623	forwards
-T11	Entity 138 189	whether he wants an individual or family membership
-T69	Entity 823 834	the payment
-T47	Entity 624 649	the visitor's information
-T26	Entity 330 370	the information for its spouse and spawn
-T24	Action 322 329	prepare
-T50	Entity 679 701	The billing department
-T9	Action 131 137	decide
-T81	Entity 920 928	the card
-T60	Entity 741 749	The bank
-T84	Entity 941 943	it
-T46	Entity 587 609	The ZooClub department
-T97	Action 1116 1118	go
-T37	Entity 486 513	the visitor's personal data
-T79	Action 914 919	print
-T51	Action 702 707	sends
-T38	Action 534 539	takes
-T87	Entity 977 1001	the Marketing department
-T36	Entity 452 474	The ZooClub department
-T61	Action 750 759	processes
-T20	Entity 245 269	his personal information
-R22	Agent Arg1:T35 Arg2:T36	
-R39	Patient Arg1:T67 Arg2:T69	
+T76	Condition 196 229	he wants an individual membership
+T77	Condition 277 305	he wants a family membership
+T31	Entity 412 428	this information
+T20	Entity 247 271	his personal information
+T68	Entity 1018 1081	a request to mail the Zoo Club's magazine to the visitor's home
+T18	Action 239 246	prepare
+T65	Entity 950 952	it
+T46	Action 758 767	processes
+T61	Entity 896 918	the ZooClub department
+T29	Action 407 411	give
+T57	Action 874 881	payment
+T50	Action 811 813	is
+T49	Action 772 779	payment
+T66	Action 1012 1017	makes
+T2	Entity 5 14	a visitor
+T37	Entity 545 564	the payment request
+T24	Action 325 332	prepare
+T30	Entity 384 396	The customer
+T43	Entity 686 708	The billing department
+T32	Action 480 490	introduces
+T52	Action 823 830	charges
+T70	Entity 1036 1059	the Zoo Club's magazine
+T58	Action 885 894	confirmed
+T7	Action 92 97	taken
+T41	Entity 630 683	the visitor's information to the marketing department
+T59	Entity 870 881	the payment
+T13	Entity 147 149	he
+T67	Entity 987 1011	the Marketing department
+T40	Entity 593 615	The ZooClub department
+T3	Entity 21 62	to become a member of Barcelona's ZooClub
+T12	Action 150 155	wants
+T25	Entity 315 317	he
+T72	Entity 1088 1099	the visitor
+T51	Entity 800 810	everything
+T63	Action 942 949	deliver
+T42	Action 709 714	sends
+T48	Entity 768 791	the payment information
+T71	Action 1100 1108	receives
+T6	Action 68 77	following
+T33	Entity 457 479	The ZooClub department
+T9	Action 132 138	decide
+T27	Action 368 373	spawn
+T45	Action 719 726	payment
+T35	Action 539 544	takes
+T69	Action 1031 1035	mail
+T10	Entity 114 126	the customer
+T1	Action 15 20	wants
+T73	Entity 1109 1117	the card
+T54	Entity 831 862	the payment into user's account
+T74	Action 1126 1128	go
+T39	Action 621 629	forwards
+T38	Action 549 556	payment
+T26	Entity 333 348	the information
+T62	Entity 929 937	the card
+T8	Entity 64 83	the following steps
+T75	Entity 1119 1121	he
+T44	Entity 715 734	the payment request
+T4	Action 24 30	become
+T11	Entity 139 190	whether he wants an individual or family membership
+T19	Entity 231 233	he
+T34	Entity 491 518	the visitor's personal data
+T55	Action 835 842	payment
+T14	Entity 156 190	an individual or family membership
+T47	Entity 749 757	The bank
+T60	Action 923 928	print
+R33	Patient Arg1:T55 Arg2:T54	
+R2	Patient Arg1:T1 Arg2:T3	
+R40	Patient Arg1:T66 Arg2:T68	
+R17	Agent Arg1:T27 Arg2:T25	
+R18	Agent Arg1:T29 Arg2:T30	
+R32	Patient Arg1:T52 Arg2:T54	
+R8	Patient Arg1:T12 Arg2:T14	
 R16	Patient Arg1:T24 Arg2:T26	
+R38	Patient Arg1:T63 Arg2:T65	
 R12	Patient Arg1:T18 Arg2:T20	
-R46	Agent Arg1:T82 Arg2:T80	
-R38	Agent Arg1:T67 Arg2:T60	
-R55	Agent Arg1:T97 Arg2:T98	
+R39	Agent Arg1:T66 Arg2:T67	
+R34	Patient Arg1:T58 Arg2:T59	
+R22	Agent Arg1:T35 Arg2:T33	
+R26	Agent Arg1:T42 Arg2:T43	
 R15	Agent Arg1:T24 Arg2:T25	
 R21	Patient Arg1:T32 Arg2:T34	
-R36	Patient Arg1:T61 Arg2:T63	
-R45	Patient Arg1:T79 Arg2:T81	
-R28	Patient Arg1:T45 Arg2:T47	
+R36	Patient Arg1:T60 Arg2:T62	
+R28	Agent Arg1:T46 Arg2:T47	
+R1	Agent Arg1:T1 Arg2:T2	
+R42	Agent Arg1:T71 Arg2:T72	
+R43	Patient Arg1:T71 Arg2:T73	
+R41	Patient Arg1:T69 Arg2:T70	
+R25	Patient Arg1:T39 Arg2:T41	
+R31	Agent Arg1:T52 Arg2:T47	
 R5	Agent Arg1:T9 Arg2:T10	
-R47	Patient Arg1:T82 Arg2:T84	
 R20	Agent Arg1:T32 Arg2:T33	
-R25	Patient Arg1:T38 Arg2:T40	
-R27	Agent Arg1:T45 Arg2:T46	
+R37	Agent Arg1:T63 Arg2:T61	
 R6	Patient Arg1:T9 Arg2:T11	
+R3	Patient Arg1:T4 Arg2:T2	
+R7	Agent Arg1:T12 Arg2:T13	
+R27	Patient Arg1:T42 Arg2:T44	
 R11	Agent Arg1:T18 Arg2:T19	
-R31	Patient Arg1:T51 Arg2:T53	
-R30	Agent Arg1:T51 Arg2:T50	
-R24	Agent Arg1:T38 Arg2:T36	
+R35	Agent Arg1:T60 Arg2:T61	
+R19	Patient Arg1:T29 Arg2:T31	
+R24	Agent Arg1:T39 Arg2:T40	
+R4	Patient Arg1:T7 Arg2:T8	
+R30	Patient Arg1:T50 Arg2:T51	
 R23	Patient Arg1:T35 Arg2:T37	
-R44	Agent Arg1:T79 Arg2:T80	
-R56	Coreference Arg1:T37 Arg2:T47	
-R61	Coreference Arg1:T33 Arg2:T10	
-R65	Coreference Arg1:T26 Arg2:T47	
-R68	Coreference Arg1:T20 Arg2:T34	
-R69	Coreference Arg1:T80 Arg2:T46	
-R70	Coreference Arg1:T46 Arg2:T36	
-R1	Coreference Arg1:T19 Arg2:T10	
-R2	Coreference Arg1:T37 Arg2:T34	
-A1	Optional T38
-R3	Agent Arg1:T61 Arg2:T60	
-T1	Condition 861 885	the payment is confirmed
-R4	Coreference Arg1:T84 Arg2:T81	
-T2	Condition 1078 1107	the visitor receives the card
-R7	Coreference Arg1:T33 Arg2:T98	
-A2	Optional T97
-A3	Ending T97
-T3	Action 1021 1025	mail
-R8	Agent Arg1:T3 Arg2:T87	
-R9	Patient Arg1:T3 Arg2:T88	
-R10	Exclusive Arg1:T18 Arg2:T24	
-R13	Sequential Arg1:T18 Arg2:T32	
-R14	Parallel Arg1:T45 Arg2:T35	
-R17	Sequential Arg1:T38 Arg2:T51	
-R18	Parallel Arg1:T35 Arg2:T3	
-R19	Coreference Arg1:T25 Arg2:T10	
+R29	Patient Arg1:T46 Arg2:T48	
+R44	Agent Arg1:T74 Arg2:T75	
+R45	Coreference Arg1:T41 Arg2:T2	
+R46	Coreference Arg1:T2 Arg2:T72	
+R47	Coreference Arg1:T72 Arg2:T34	
+R48	Coreference Arg1:T34 Arg2:T68	
+R49	Coreference Arg1:T13 Arg2:T25	
+R50	Coreference Arg1:T25 Arg2:T30	
+R51	Coreference Arg1:T30 Arg2:T20	
+R52	Coreference Arg1:T20 Arg2:T10	
+R53	Coreference Arg1:T10 Arg2:T19	
+R54	Coreference Arg1:T26 Arg2:T31	
+R55	Coreference Arg1:T31 Arg2:T20	
+R56	Coreference Arg1:T33 Arg2:T61	
+R57	Coreference Arg1:T61 Arg2:T40	
+R58	Coreference Arg1:T37 Arg2:T44	
+R59	Coreference Arg1:T44 Arg2:T68	
+R60	Coreference Arg1:T67 Arg2:T41	
+R61	Coreference Arg1:T54 Arg2:T59	
+R62	Coreference Arg1:T75 Arg2:T62	
+R63	Coreference Arg1:T62 Arg2:T73	
+R64	Coreference Arg1:T41 Arg2:T48	

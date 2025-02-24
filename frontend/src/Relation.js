@@ -11,6 +11,10 @@ function generateCandidateAnchors (box) {
     return [[1,0], [-1, 0], [0, 1], [0, -1]].map(([bx,by]) => ({x: cx + bx*hw, y: cy + by*hh}))
 }
 
+function generateAllCandidateAnchors (annRects) {
+    return annRects.map((box) => generateCandidateAnchors(box)).flat();
+}
+
 function sqdist(p1, p2) {
     return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y);
 }
@@ -29,11 +33,8 @@ class Relation extends Component {
     }
 
     render () {
-        let sourceBox = this.props.sourceBox;
-        let destBox = this.props.destBox;
-
-        let sourceCandidates = generateCandidateAnchors(sourceBox);
-        let destCandidates = generateCandidateAnchors(destBox);
+        let sourceCandidates = generateAllCandidateAnchors(this.props.sourceBoxes);
+        let destCandidates = generateAllCandidateAnchors(this.props.destBoxes);
 
         let minVal = Infinity;
         let minPair = null;

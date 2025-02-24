@@ -18,7 +18,7 @@ class SidePanel extends Component {
     }
 
     createAnnotationBox (index, key) {
-        let ann = this.props.model.annotations[index];
+        let ann = this.annotationsToRender[index];
 
         return (
             <div style={{backgroundColor: this.props.hover[ann.id] ? Constants.typeColors[ann.type] : Constants.dullTypeColors[ann.type],
@@ -42,7 +42,7 @@ class SidePanel extends Component {
     }
 
     createRelationBox (index, key) {
-        let rel = this.props.model.relations[index];
+        let rel = this.relationsToRender[index];
 
         return (
             <div style={{backgroundColor: this.props.model.isRelHighlighted(rel.id) ? "#dd5555" : "white",
@@ -65,7 +65,14 @@ class SidePanel extends Component {
             </div>);
     }
 
+    annotationsToRender = []
+
+    relationsToRender = []
+
     render() {
+        this.annotationsToRender = this.props.model.annotations.filter((ann) => !this.props.model.shouldBeHidden(ann.type))
+        this.relationsToRender = this.props.model.relations.filter((rel) => !this.props.model.shouldBeHidden(rel.type))
+
         return (
             <Tabs id="tabs">
                 <Tab eventKey={1} title="Annotations">
@@ -73,7 +80,7 @@ class SidePanel extends Component {
                                  direction: "rtl"}}>
                         <ReactList
                             itemRenderer={this.createAnnotationBox}
-                            length={this.props.model.annotations.length}
+                            length={this.annotationsToRender.length}
                             type='uniform'/>
                     </div>
                 </Tab>
@@ -82,7 +89,7 @@ class SidePanel extends Component {
                                  direction: "rtl"}}>
                         <ReactList
                             itemRenderer={this.createRelationBox}
-                            length={this.props.model.relations.length}
+                            length={this.relationsToRender.length}
                             type='uniform'/>
                     </div>
                 </Tab>

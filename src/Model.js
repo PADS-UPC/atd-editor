@@ -1,4 +1,5 @@
 import Utils from "./Utils.js";
+import Constants from "./Constants.js";
 
 function mkModel (reRender) {
 
@@ -76,6 +77,38 @@ function mkModel (reRender) {
         model.relations.push(relation);
         reRender();
     };
+
+    model.hiddenTypes = {
+    };
+
+    // NOTE: This function works under the assumption that relations and spans
+    // will never share a type name, and thus the type can be used reliably 
+    model.hideType = function(type) {
+        model.hiddenTypes[type] = true;
+        reRender();
+    };
+
+    model.showType = function(type) {
+        model.hiddenTypes[type] = false;
+        reRender();
+    };
+
+    model.setHiddenState = function(type, hiddenState) {
+        console.log("waaaaaaat");
+        model.hiddenTypes[type] = hiddenState;
+        reRender();
+    };
+
+    /** Returns whether a type should be hidden. Note that, for example, in relations,
+        if Actions are hidden, temporal relations should be too. */
+    model.shouldBeHidden = function(type) {
+        if (model.hiddenTypes[type]) return true;
+        else if (Constants.relationTypes[type] &&
+                 (model.hiddenTypes[Constants.relationTypes[type][0]]  ||
+                  model.hiddenTypes[Constants.relationTypes[type][1]])) return true;
+        else return false;
+    };
+
 
     model.getAnnotation = function(id) {
         let index = model.annotations.findIndex((ann) => ann.id === id);

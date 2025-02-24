@@ -67,14 +67,15 @@ class AtdViewer extends Component {
     }
 
     createAnnotationHighlight(annotationModel) {
-        let {id, annRects} = annotationModel;
+        let {id, annRects, type} = annotationModel;
 
         return (<Annotation key={id}
                             hover={this.props.hover[id]}
                             annRects={annRects}
                             id={id}
                             callbacks={this.callbacks}
-                            type={annotationModel.type}/>);
+                            type={annotationModel.type}
+                            hidden={this.props.model.shouldBeHidden(type)} />);
     }
 
     handleMouseUp (e) {
@@ -154,6 +155,7 @@ class AtdViewer extends Component {
                                 sourceBox={this.props.model.getAnnBoundingBox(rel.sourceId)}
                                 destBox={this.props.model.getAnnBoundingBox(rel.destId)}
                                 callbacks={this.callbacks}
+                                hidden={this.props.model.shouldBeHidden(rel.type)}
                             />)}
                     </div>
 

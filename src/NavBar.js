@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
 import Utils from "./Utils.js";
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 var Navbar = require('react-bootstrap').Navbar;
 var Nav = require('react-bootstrap').Nav;
+var NavItem = require('react-bootstrap').NavItem;
 var NavDropdown = require('react-bootstrap').NavDropdown;
 var MenuItem = require('react-bootstrap').MenuItem;
+
+let VisibilityToggle = function(props) {
+        return (
+            <ToggleButton
+                selected={props.model.hiddenTypes[props.type]}
+                onClick={() => props.model.setHiddenState(props.type, !props.model.hiddenTypes[props.type])}>
+                {props.type}
+            </ToggleButton>);
+    }
+
 
 class NavBar extends Component {
 
@@ -28,8 +41,6 @@ class NavBar extends Component {
         let self = this;
         this.props.model.loadRequest()
             .then(function (response) {
-                console.log("wat")
-                console.log(response)
                 if (response.status !== "ok") {
                     console.log(response);
                     console.log("Error loading data. "+response.status);
@@ -37,8 +48,8 @@ class NavBar extends Component {
                 else {
                     console.log("Got data:")
                     console.log(response.data);
+                    // XXX: window.paragraphs!!!
                     self.props.model.importData(window.paragraphs, response.data);
-                    console.log(self.props.model);
                 }
             })
             .catch((res) => console.log("Error loading data" + res))
@@ -60,6 +71,32 @@ class NavBar extends Component {
                     <MenuItem eventKey={3.2}>Placeholder</MenuItem>
                     <MenuItem eventKey={3.3}>Placehodler 2</MenuItem>
                 </NavDropdown>
+
+                <NavItem>
+                    <ToggleButtonGroup style={{boxShadow: "0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)"}}>
+                        <VisibilityToggle model={this.props.model} type={"Action"}/>
+                        <VisibilityToggle model={this.props.model} type={"Entity"}/>
+                        <VisibilityToggle model={this.props.model} type={"Condition"}/>
+                    </ToggleButtonGroup>
+                </NavItem>
+                <NavItem>
+                    <ToggleButtonGroup style={{boxShadow: "0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)"}}>
+                        <VisibilityToggle model={this.props.model} type={"Agent"}/>
+                        <VisibilityToggle model={this.props.model} type={"Patient"}/>
+                    </ToggleButtonGroup>
+                </NavItem>
+                <NavItem>
+                    <ToggleButtonGroup style={{boxShadow: "0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)"}}>
+                        <VisibilityToggle model={this.props.model} type={"Exclusive"}/>
+                        <VisibilityToggle model={this.props.model} type={"Sequential"}/>
+                        <VisibilityToggle model={this.props.model} type={"Parallel"}/>
+                    </ToggleButtonGroup>
+                </NavItem>
+                <NavItem>
+                    <ToggleButtonGroup style={{boxShadow: "0px 1px 5px 0px rgba(0, 0, 0, 0.2),0px 2px 2px 0px rgba(0, 0, 0, 0.14),0px 3px 1px -2px rgba(0, 0, 0, 0.12)"}}>
+                        <VisibilityToggle model={this.props.model} type={"Coreference"}/>
+                    </ToggleButtonGroup>
+                </NavItem>
             </Nav>
         </Navbar>)
     }

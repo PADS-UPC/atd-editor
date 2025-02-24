@@ -17,10 +17,10 @@ function mkModel (reRender) {
 
 
     /** Constructor for annotations */
-    let mkAnnotation = function (paragraphId, type, start, end) {
+    let mkAnnotation = function (paragraphId, type, start, end, annRects) {
         let id = "A"+annCount++;
         let hover = false;
-        return {id, paragraphId, type, start, end, hover};
+        return {id, paragraphId, type, start, end, hover, annRects};
     };
 
     let mkRelation = function (type, sourceId, destId) {
@@ -85,6 +85,38 @@ function mkModel (reRender) {
         return annotations[index].hover;
     };
 
+    let getAnnBoundingBox = function (id) {
+        let index = annotations.findIndex((ann) => ann.id === id);
+        let annRects = annotations[index].annRects;
+
+        let rects = annRects.map((rect) => ({top: rect.top,
+                                             bottom: rect.top + rect.height,
+                                             left: rect.left,
+                                             right: rect.left + rect.width}));
+
+        let bbox = annRects[0];
+        rects.forEach(function(rect) {
+            if (rect.top < bbox.top) {bbox.top = rect.top;}
+            if (rect.bottom > bbox.bottom) {bbox.bottom = rect.bottom;}
+            if (rect.left < bbox.left) {bbox.left = rect.left;}
+            if (rect.right > bbox.right) {bbox.right = rect.right;}
+        });
+
+        return bbox;
+    };
+
+    let isRelHighlighted = function (relId) {
+        let index = relations.findIndex((rel) => rel.id === relId);
+        let rel = relations[index];
+        return rel.highlighted || getHover(rel.sourceId) || getHover(rel.destId);
+    };
+
+    let setRelHighlighted = function (relId, highlighted) {
+        let index = relations.findIndex((rel) => rel.id === relId);
+        relations[index].highlighted = highlighted;
+        reRender();
+    };
+
 
     return {
         relationCompatibilities,
@@ -97,7 +129,10 @@ function mkModel (reRender) {
         deleteRelation,
         addRelation,
         getHover,
-        setHover
+        setHover,
+        getAnnBoundingBox,
+        isRelHighlighted,
+        setRelHighlighted
     };
 }
 

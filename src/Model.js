@@ -16,11 +16,24 @@ function mkModel (reRender) {
     };
 
 
+    let typeColors = {
+        "Action": "#d97881",
+        "Condition": "#81d978",
+        "Entity": "#7881d9"
+    };
+
+    let dullTypeColors = {
+        "Action": "#f0cbcf",
+        "Condition": "#cff0cb",
+        "Entity": "#cbcff0"
+    };
+
+
     /** Constructor for annotations */
-    let mkAnnotation = function (paragraphId, type, start, end, annRects) {
+    let mkAnnotation = function (paragraphId, type, start, end, text, annRects) {
         let id = "A"+annCount++;
         let hover = false;
-        return {id, paragraphId, type, start, end, hover, annRects};
+        return {id, paragraphId, type, start, end, hover, annRects, text};
     };
 
     let mkRelation = function (type, sourceId, destId) {
@@ -119,6 +132,8 @@ function mkModel (reRender) {
 
 
     return {
+        typeColors,
+        dullTypeColors,
         relationCompatibilities,
         mkAnnotation,
         mkRelation,

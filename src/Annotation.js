@@ -3,11 +3,6 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 class Annotation extends Component {
 
-    typeColors = {
-        "Action": "#770000",
-        "Condition": "#007700",
-        "Entity": "#000077"
-    }
 
     constructor() {
         super()
@@ -79,7 +74,7 @@ class Annotation extends Component {
                                                                top: rect.top,
                                                                left: rect.left,
                                                                position: "absolute",
-                                                               backgroundColor: this.typeColors[this.props.type],}}/>);
+                                                               backgroundColor: this.props.model.typeColors[this.props.type],}}/>);
 
         return (
             <div onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >

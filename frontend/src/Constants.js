@@ -20,6 +20,10 @@ function Constants() {
         "Sequential": [["Action", "Condition"], ["Action", "Condition"]]
     };
 
+    constants.symmetricRelationTypes = {
+        "Coreference": true
+    };
+
     constants.typeColors = {
         "Action": "#d97881",
         "Condition": "#81d978",

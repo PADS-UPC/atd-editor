@@ -1,5 +1,6 @@
 import React, { PureComponent,  Component } from 'react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import constants from './Constants.js';
 
 function generateCandidateAnchors (box) {
     let hw = box.width / 2;
@@ -49,15 +50,20 @@ class Relation extends Component {
             }
         }
 
-        let v = { x: minPair[1].x - minPair[0].x,
-                  y: minPair[1].y - minPair[0].y }
-        let mv = Math.sqrt(v.x*v.x + v.y*v.y);
-        let arrowheadSize = 11;
+        let isSymmetric = constants.symmetricRelationTypes[this.props.type];
 
-        if (mv > arrowheadSize * 1.5) {
-            let delta = {x: arrowheadSize * v.x/mv, y: arrowheadSize * v.y/mv};
-            minPair[1].x = minPair[1].x - delta.x;
-            minPair[1].y = minPair[1].y - delta.y;
+        if (!isSymmetric) {
+            let v = { x: minPair[1].x - minPair[0].x,
+                      y: minPair[1].y - minPair[0].y }
+            let mv = Math.sqrt(v.x*v.x + v.y*v.y);
+            let arrowheadSize = 11;
+
+
+            if (mv > arrowheadSize * 1.5) {
+                let delta = {x: arrowheadSize * v.x/mv, y: arrowheadSize * v.y/mv};
+                minPair[1].x = minPair[1].x - delta.x;
+                minPair[1].y = minPair[1].y - delta.y;
+            }
         }
 
         return (
@@ -82,10 +88,11 @@ class Relation extends Component {
                         </defs>
 
                         <line style={{pointerEvents: "none",
-                                      markerEnd: `url(#markerArrow${this.props.id})`}}
+                                      markerEnd: isSymmetric ? "" : `url(#markerArrow${this.props.id})`}}
                               x1={minPair[0].x} y1={minPair[0].y}
                               x2={minPair[1].x} y2={minPair[1].y}
                               className="arrow" />
+
 
                         <line style={{pointerEvents: "stroke", strokeWidth: "10"}}
                               x1={minPair[0].x} y1={minPair[0].y}

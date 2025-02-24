@@ -29,7 +29,8 @@
 
 .arrow {
     stroke:rgb(0,0,0);
-    stroke-width:2;
+    stroke-width:2; 
+    marker-end:url(#markerArrow);
 }
 
 .popup-content {

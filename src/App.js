@@ -32,22 +32,6 @@ class App extends Component {
             <Nav>
             </Nav>
         </Navbar>
-
-
-
-            
-            <ContextMenu id="some_unique_identifier">
-            <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-              ContextMenu Item 1
-            </MenuItem>
-            <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-                ContextMenu Item 2
-            </MenuItem>
-              <MenuItem divider />
-              <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
-   	            ContextMenu Item 3
-              </MenuItem>
-            </ContextMenu>
             <AtdViewer sentences={sentences}></AtdViewer>
 
       </div>

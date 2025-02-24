@@ -12,7 +12,8 @@
         "react-highlightable": "0.0.2",
         "react-list": "^0.8.10",
         "react-scripts": "1.1.5",
-        "react-sidebar": "^3.0.2"
+        "react-sidebar": "^3.0.2",
+        "reactjs-popup": "^1.3.0"
     },
     "scripts": {
         "start": "react-scripts start",

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import Constants from "./Constants.js";
 
 class Annotation extends Component {
 
@@ -25,20 +26,20 @@ class Annotation extends Component {
     }
 
     handleOnMouseOver () {
-        this.props.callbacks.setHover(true)
+        this.props.callbacks.onHoverStart(this.props.id);
     }
 
     handleOnMouseOut () {
-        this.props.callbacks.setHover(false)
+        this.props.callbacks.onHoverEnd(this.props.id);
     }
 
     handleClick (e, data) {
-        this.props.callbacks[data.action]();
+        this.props.callbacks[data.action](this.props.id);
     }
 
     onDragOver (ev) {
         // Consider type combinations and discard impossible combinations
-        let compat = this.props.model.relationCompatibilities[ev.dataTransfer.getData("type")];
+        let compat = Constants.relationCompatibilities[ev.dataTransfer.getData("type")];
         if (compat && compat[this.props.type]) {
             ev.preventDefault();
         }
@@ -48,7 +49,7 @@ class Annotation extends Component {
     onDrop (ev) {
         let id = ev.dataTransfer.getData("id")
         this.setState({sourceId: id,
-                       allowedRelations: this.props.model.relationCompatibilities[ev.dataTransfer.getData("type")][this.props.type]});
+                       allowedRelations: Constants.relationCompatibilities[ev.dataTransfer.getData("type")][this.props.type]});
 
         this.newRelContextTrigger.handleContextClick(ev);
     }
@@ -60,9 +61,18 @@ class Annotation extends Component {
 
     createRelation(e, data) {
         if (this.state.sourceId) {
-            let rel = this.props.model.mkRelation(data.type, this.state.sourceId, this.props.id);
-            this.props.model.addRelation(rel);
+            //let rel = this.props.model.mkRelation(data.type, this.state.sourceId, this.props.id);
+            //this.props.model.addRelation(rel);
+            this.props.callbacks.addRelation(data.type, this.state.sourceId, this.props.id);
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        let eq = true;
+
+        eq = eq && this.props.hover === nextProps.hover;
+
+        return !eq;
     }
 
     render() {
@@ -74,7 +84,7 @@ class Annotation extends Component {
                                                                top: rect.top,
                                                                left: rect.left,
                                                                position: "absolute",
-                                                               backgroundColor: this.props.model.typeColors[this.props.type],}}/>);
+                                                               backgroundColor: Constants.typeColors[this.props.type],}}/>);
 
         return (
             <div onMouseOver={this.handleOnMouseOver} onMouseOut={this.handleOnMouseOut} >
@@ -92,7 +102,7 @@ class Annotation extends Component {
 
                 <ContextMenuTrigger id={"annotation-"+this.props.id+"-context-menu"} holdToDisplay={-1}>
                     <div draggable="true" onDragStart={this.onDragStart} onDrop={this.onDrop} onDragOver={this.onDragOver}
-                         style={{opacity: this.props.callbacks.getHover() ? "0.8" : "0.3"}}>
+                         style={{opacity: this.props.hover ? "0.8" : "0.3"}}>
                         {annDivs}
                     </div>
                 </ContextMenuTrigger>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactList from "react-list";
+import Constants from "./Constants.js";
 
 var Tab = require('react-bootstrap').Tab;
 var Tabs = require('react-bootstrap').Tabs;
@@ -20,17 +21,17 @@ class SidePanel extends Component {
         let ann = this.props.model.annotations[index];
 
         return (
-            <div style={{backgroundColor: this.props.model.getHover(ann.id) ? this.props.model.typeColors[ann.type] : this.props.model.dullTypeColors[ann.type],
+            <div style={{backgroundColor: this.props.hover[ann.id] ? Constants.typeColors[ann.type] : Constants.dullTypeColors[ann.type],
                          textAlign: "left",
                          padding: "1em",
                          margin: "1em",
                          borderRadius: "0.2em",
                          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)"}}
-                 onMouseOver={() => this.props.model.setHover(ann.id, true)}
-                 onMouseOut={() => this.props.model.setHover(ann.id, false)}>
+                 onMouseOver={() => this.props.callbacks.onHoverStart(ann.id)}
+                 onMouseOut={() => this.props.callbacks.onHoverEnd(ann.id)}>
                 <Row>
                     <Col xs={10}>
-                        <h4 style={{fontFamily: "serif"}}>"{ann.text}"</h4>
+                        <h4><strong>{ann.id}</strong> <emph>"{ann.text}"</emph></h4>
                     </Col>
                     <Col xs={2}>
                         <Button bsSize="small" onClick={() => this.props.model.deleteAnnotation(ann.id)}>x</Button>
@@ -66,7 +67,7 @@ class SidePanel extends Component {
 
     render() {
         return (
-            <Tabs>
+            <Tabs id="tabs">
                 <Tab eventKey={1} title="Annotations">
                     <div style={{overflowY: "scroll", height: "800px",
                                  direction: "rtl"}}>

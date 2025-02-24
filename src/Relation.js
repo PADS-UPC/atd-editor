@@ -4,8 +4,6 @@ function generateCandidateAnchors (box) {
     let hw = box.width / 2;
     let hh = box.height / 2;
 
-    console.log(`hw: ${hw}, hh: ${hh}`)
-
     let cx = box.left + hw;
     let cy = box.top + hh;
 
@@ -18,15 +16,21 @@ function sqdist(p1, p2) {
 
 class Relation extends Component {
 
+    shouldComponentUpdate (nextProps, nextState) {
+        let eq = true;
+
+        eq = eq && this.props.highlighted === nextProps.highlighted;
+
+        return !eq;
+
+    }
+
     render () {
-        let sourceBox = this.props.model.getAnnBoundingBox(this.props.sourceId);
-        let destBox = this.props.model.getAnnBoundingBox(this.props.destId);
+        let sourceBox = this.props.sourceBox;
+        let destBox = this.props.destBox;
 
         let sourceCandidates = generateCandidateAnchors(sourceBox);
         let destCandidates = generateCandidateAnchors(destBox);
-
-        console.log(sourceCandidates);
-        console.log(destCandidates);
 
         let minVal = Infinity;
         let minPair = null;
@@ -72,8 +76,8 @@ class Relation extends Component {
                     <line style={{pointerEvents: "stroke", strokeWidth: "10"}}
                           x1={minPair[0].x} y1={minPair[0].y}
                           x2={minPair[1].x} y2={minPair[1].y}
-                          onMouseOver={() => this.props.model.setRelHighlighted(this.props.id, true)}
-                          onMouseOut={() => this.props.model.setRelHighlighted(this.props.id, false)}/>
+                          onMouseOver={() => this.props.callbacks.onHoverStart(this.props.id)}
+                          onMouseOut={() => this.props.callbacks.onHoverEnd(this.props.id)}/>
 
 
                 </svg>

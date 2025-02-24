@@ -3,7 +3,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger, SubMenu } from "react-contex
 import Annotation from "./Annotation.js";
 
 const AtdViewerStyle = {"textAlign": "justify",
-                        "margin": "100px 20% 100px 20%",
+                        "margin": "100px 10% 100px 10%",
                         "padding": "8em 10em 8em 10em",
                         "backgroundColor": "white",
                         "boxShadow": "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
@@ -11,7 +11,7 @@ const AtdViewerStyle = {"textAlign": "justify",
                         "fontSize": "12pt"};
 
 function viewportRelativeBox (element) {
-    let rparent = document.documentElement.getBoundingClientRect();
+    let rparent = document.getElementById('annotations-root').getBoundingClientRect();
     let relement = element.getBoundingClientRect();
 
     return {
@@ -33,6 +33,8 @@ function getCharacterPositionInParagraph (paragraph, offset) {
     return box;
 }
 
+window.getCharacterPositionInParagraph = getCharacterPositionInParagraph;
+
 /*@pre: range's common ancestor is a <p> element containing only plain text*/
 function getOffsetInParentParagraph(range) {
     let paragraph = range.startContainer.parentElement;
@@ -51,14 +53,6 @@ function getOffsetInParentParagraph(range) {
     return [startOffset, endOffset];
 }
 
-let annCount = 0;
-function createAnnotation(annotationModel) {
-    let id = "A"+annCount++;
-    annotationModel.id = id;
-    return annotationModel;
-}
-
-
 class AtdViewer extends Component {
 
     contextTrigger = null;
@@ -68,7 +62,7 @@ class AtdViewer extends Component {
 
         this.state = {
             selection: null,
-            annotations: [],
+            //annotations: [],
             nextAnnModel: null
         };
 
@@ -77,13 +71,15 @@ class AtdViewer extends Component {
     }
 
     deleteAnnotation(id) {
-        this.setState({
-            annotations: this.state.annotations.filter((ann) => ann.id !== id)
-        });
-        console.log(this.state.annotations);
+        this.props.model.deleteAnnotation(id);
+        this.forceUpdate();
+
+        //this.setState({
+            //annotations: this.state.annotations.filter((ann) => ann.id !== id)
+        //});
     }
 
-    mkAnnotation(annotationModel) {
+    createAnnotationHighlight(annotationModel) {
         let {paragraphId, start, end} = annotationModel;
         let paragraph = document.getElementById(paragraphId);
         let startBox = getCharacterPositionInParagraph(paragraph, start);
@@ -92,11 +88,13 @@ class AtdViewer extends Component {
 
         let self = this;
         let callbacks = {
+            getHover: function() {return self.props.model.getHover(id)},
+            setHover: function(hoverState) {self.props.model.setHover(id, hoverState)},
             deleteAnnotation: function() {self.deleteAnnotation(id)}
         };
 
         return (<Annotation key={id} startBox={startBox} endBox={endBox} paragraph={paragraph}
-                            id={id} callbacks={callbacks} type={annotationModel.type}/>);
+                            id={id} callbacks={callbacks} model={this.props.model} type={annotationModel.type}/>);
     }
 
     handleMouseUp (e) {
@@ -124,37 +122,50 @@ class AtdViewer extends Component {
 
     newAnnotation (e, data) {
         if (this.state.nextAnnModel) {
-            let ann = createAnnotation(this.state.nextAnnModel);
-            ann.type = data.type;
+            let {paragraphId, start, end} = this.state.nextAnnModel;
+            let ann = this.props.model.mkAnnotation(paragraphId, data.type, start, end)
+            this.props.model.addAnnotation(ann);
+
             this.setState({
-                annotations: this.state.annotations.concat(ann),
                 nextAnnModel: null
             });
+            this.forceUpdate();
         }
     }
 
     render () {
 
+        let paragraphs = this.props.sentences.map(
+            function(sentence, index) {
+                return(<p key={"paragraph-"+index} id={"paragraph-"+index}>{sentence}</p>);
+            });
+
+        let annotations = this.props.model.annotations
+            .sort((x, y) => (y.end - y.start)- (x.end - x.start))
+            .map((annModel) => this.createAnnotationHighlight(annModel));
+
         return(
             <div>
-              <ContextMenu id="new-annotation-menu">
-                <MenuItem data={{type: 'Action'}} onClick={this.newAnnotation}>
-                  New Action
-                </MenuItem>
-                <MenuItem data={{type: 'Entity'}} onClick={this.newAnnotation}>
-                  New Entity
-                </MenuItem>
-                <MenuItem data={{type: 'Condition'}} onClick={this.newAnnotation}>
-                  New Condition
-                </MenuItem>
-              </ContextMenu>
+                <ContextMenu id="new-annotation-menu">
+                    <MenuItem data={{type: 'Action'}} onClick={this.newAnnotation}>
+                        New Action
+                    </MenuItem>
+                    <MenuItem data={{type: 'Entity'}} onClick={this.newAnnotation}>
+                        New Entity
+                    </MenuItem>
+                    <MenuItem data={{type: 'Condition'}} onClick={this.newAnnotation}>
+                        New Condition
+                    </MenuItem>
+                </ContextMenu>
 
-            <ContextMenuTrigger id="new-annotation-menu" ref={c => this.contextTrigger = c} holdToDisplay={-1}>
-                {this.state.annotations.sort((x, y) => (y.end - y.start)- (x.end - x.start)).map((annModel) => this.mkAnnotation(annModel))}
-              <div id="atd-viewer" style={AtdViewerStyle} onMouseUp={this.handleMouseUp}>
-                {this.props.sentences.map(function(sentence, index) {return(<p key={"paragraph-"+index} id={"paragraph-"+index}>{sentence}</p>);})}
-              </div>
-            </ContextMenuTrigger>
+                <ContextMenuTrigger id="new-annotation-menu" ref={c => this.contextTrigger = c} holdToDisplay={-1}>
+                    <div id="annotations-root" style={{position: "relative"}}>
+                    {annotations}
+                    </div>
+                    <div id="atd-viewer" style={AtdViewerStyle} onMouseUp={this.handleMouseUp}>
+                        {paragraphs}
+                    </div>
+                </ContextMenuTrigger>
             </div>
 
         );
